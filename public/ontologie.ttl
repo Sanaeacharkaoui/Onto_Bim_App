@@ -1,0 +1,420 @@
+@prefix : <http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/> .
+
+<http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.co-ode.org/ontologies/ont.owl#Reduce
+<http://www.co-ode.org/ontologies/ont.owl#Reduce> rdf:type owl:ObjectProperty ;
+                                                  rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#SafetyMeasure> ;
+                                                  rdfs:range <http://www.co-ode.org/ontologies/ont.owl#IfcRisk> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#accomplish
+<http://www.co-ode.org/ontologies/ont.owl#accomplish> rdf:type owl:ObjectProperty ;
+                                                      owl:inverseOf :isAccomplishedBy ;
+                                                      rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#IfcPerson> ,
+                                                                  :IfcActor ;
+                                                      rdfs:range <http://www.co-ode.org/ontologies/ont.owl#Activity> ,
+                                                                 <http://www.co-ode.org/ontologies/ont.owl#IfcTask> ,
+                                                                 <http://www.co-ode.org/ontologies/ont.owl#WorkSituation> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#hasActivity
+<http://www.co-ode.org/ontologies/ont.owl#hasActivity> rdf:type owl:ObjectProperty ;
+                                                       rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#WorkSituation> ;
+                                                       rdfs:range <http://www.co-ode.org/ontologies/ont.owl#Activity> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#hasTask
+<http://www.co-ode.org/ontologies/ont.owl#hasTask> rdf:type owl:ObjectProperty ;
+                                                   rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#Activity> ;
+                                                   rdfs:range <http://www.co-ode.org/ontologies/ont.owl#IfcTask> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#isLocatedIn
+<http://www.co-ode.org/ontologies/ont.owl#isLocatedIn> rdf:type owl:ObjectProperty ;
+                                                       rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#Activity> ;
+                                                       rdfs:range :IfcBuildingElement .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#isPresenting
+<http://www.co-ode.org/ontologies/ont.owl#isPresenting> rdf:type owl:ObjectProperty ;
+                                                        rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#Activity> ,
+                                                                    <http://www.co-ode.org/ontologies/ont.owl#IfcTask> ;
+                                                        rdfs:range <http://www.co-ode.org/ontologies/ont.owl#IfcRisk> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#need
+<http://www.co-ode.org/ontologies/ont.owl#need> rdf:type owl:ObjectProperty ;
+                                                rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#IfcTask> ;
+                                                rdfs:range <http://www.co-ode.org/ontologies/ont.owl#SafetyMeasure> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IsHorizontalHoleOf
+:IsHorizontalHoleOf rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf :isHoleOf ;
+                    owl:inverseOf :hasHorizontalHole ;
+                    rdfs:domain :Hopper ;
+                    rdfs:range :IfcSlab .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IsVerticalHoleOf
+:IsVerticalHoleOf rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf :isHoleOf .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/RelatedElements
+:RelatedElements rdf:type owl:ObjectProperty ;
+                 rdfs:domain :IfcRoof ;
+                 rdfs:range :IfcRailing .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/RelatingStructure
+:RelatingStructure rdf:type owl:ObjectProperty ;
+                   rdfs:domain :IfcRailing ;
+                   rdfs:range :IfcRoof .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasHole
+:hasHole rdf:type owl:ObjectProperty ;
+         rdfs:domain :IfcBuildingElement ;
+         rdfs:range :IfcOpeningElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasHorizontalHole
+:hasHorizontalHole rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf :hasHole ;
+                   rdfs:domain :IfcSlab ;
+                   rdfs:range :Hopper .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasType
+:hasType rdf:type owl:ObjectProperty ;
+         rdfs:domain :Hopper ;
+         rdfs:range :IfcOpeningElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasVerticalHole
+:hasVerticalHole rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf :hasHole ;
+                 rdfs:domain :IfcSlab ;
+                 rdfs:range :Hopper .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/isAccomplishedBy
+:isAccomplishedBy rdf:type owl:ObjectProperty ;
+                  rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#Activity> ,
+                              <http://www.co-ode.org/ontologies/ont.owl#IfcTask> ,
+                              <http://www.co-ode.org/ontologies/ont.owl#WorkSituation> ;
+                  rdfs:range <http://www.co-ode.org/ontologies/ont.owl#IfcPerson> ,
+                             :IfcActor .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/isEquipedBy
+:isEquipedBy rdf:type owl:ObjectProperty ;
+             rdfs:domain :Hopper ;
+             rdfs:range :IfcElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/isHoleOf
+:isHoleOf rdf:type owl:ObjectProperty ;
+          owl:inverseOf :isHoleOf ;
+          rdfs:domain :IfcOpeningElement ;
+          rdfs:range :IfcBuildingElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/requires
+:requires rdf:type owl:ObjectProperty ;
+          rdfs:domain <http://www.co-ode.org/ontologies/ont.owl#Activity> ;
+          rdfs:range :IfcElement .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasDiameter
+:hasDiameter rdf:type owl:DatatypeProperty ;
+             rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasHeight
+:hasHeight rdf:type owl:DatatypeProperty ;
+           rdfs:subPropertyOf owl:topDataProperty ;
+           rdfs:domain :IfcRailing ;
+           rdfs:range xsd:float .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasLength
+:hasLength rdf:type owl:DatatypeProperty ;
+           rdfs:subPropertyOf owl:topDataProperty ;
+           rdfs:domain :IfcOpeningElement ;
+           rdfs:range xsd:float .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasSpacement
+:hasSpacement rdf:type owl:DatatypeProperty ;
+              rdfs:domain :Barring ;
+              rdfs:range xsd:float .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/hasWidth
+:hasWidth rdf:type owl:DatatypeProperty ;
+          rdfs:subPropertyOf owl:topDataProperty ;
+          rdfs:domain :IfcOpeningElement ;
+          rdfs:range xsd:float .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.co-ode.org/ontologies/ont.owl#Activity
+<http://www.co-ode.org/ontologies/ont.owl#Activity> rdf:type owl:Class ;
+                                                    rdfs:subClassOf :Action .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#Cleaning
+<http://www.co-ode.org/ontologies/ont.owl#Cleaning> rdf:type owl:Class ;
+                                                    rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#Activity> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#Close
+<http://www.co-ode.org/ontologies/ont.owl#Close> rdf:type owl:Class ;
+                                                 rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#IfcTask> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#Collision
+<http://www.co-ode.org/ontologies/ont.owl#Collision> rdf:type owl:Class ;
+                                                     rdfs:subClassOf :HealthAndSafetyRisk .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#Evacuation
+<http://www.co-ode.org/ontologies/ont.owl#Evacuation> rdf:type owl:Class ;
+                                                      rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#Activity> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#FallFromHeight
+<http://www.co-ode.org/ontologies/ont.owl#FallFromHeight> rdf:type owl:Class ;
+                                                          rdfs:subClassOf :HealthAndSafetyRisk .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#IfcPerson
+<http://www.co-ode.org/ontologies/ont.owl#IfcPerson> rdf:type owl:Class ;
+                                                     rdfs:subClassOf :IfcActor .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#IfcRisk
+<http://www.co-ode.org/ontologies/ont.owl#IfcRisk> rdf:type owl:Class .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#IfcTask
+<http://www.co-ode.org/ontologies/ont.owl#IfcTask> rdf:type owl:Class ;
+                                                   rdfs:subClassOf :IfcProcess .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#Maintenance
+<http://www.co-ode.org/ontologies/ont.owl#Maintenance> rdf:type owl:Class ;
+                                                       rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#Activity> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#MaterialHandling
+<http://www.co-ode.org/ontologies/ont.owl#MaterialHandling> rdf:type owl:Class ;
+                                                            rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#Activity> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#Move
+<http://www.co-ode.org/ontologies/ont.owl#Move> rdf:type owl:Class ;
+                                                rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#IfcTask> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#Open
+<http://www.co-ode.org/ontologies/ont.owl#Open> rdf:type owl:Class ;
+                                                rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#IfcTask> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#SafetyMeasure
+<http://www.co-ode.org/ontologies/ont.owl#SafetyMeasure> rdf:type owl:Class .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#WorkSituation
+<http://www.co-ode.org/ontologies/ont.owl#WorkSituation> rdf:type owl:Class ;
+                                                         rdfs:subClassOf :IfcProcess .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Action
+:Action rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Barring
+:Barring rdf:type owl:Class ;
+         rdfs:subClassOf :IfcElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/BarringCircularOpening
+:BarringCircularOpening rdf:type owl:Class ;
+                        rdfs:subClassOf :Barring ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasSpacement ;
+                                          owl:maxQualifiedCardinality "24"^^xsd:nonNegativeInteger ;
+                                          owl:onDataRange xsd:float
+                                        ] .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/BarringSlotOpening
+:BarringSlotOpening rdf:type owl:Class ;
+                    rdfs:subClassOf :Barring ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasSpacement ;
+                                      owl:maxQualifiedCardinality "18"^^xsd:nonNegativeInteger ;
+                                      owl:onDataRange xsd:float
+                                    ] .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/BarringSquareOpening
+:BarringSquareOpening rdf:type owl:Class ;
+                      rdfs:subClassOf :Barring ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasSpacement ;
+                                        owl:maxQualifiedCardinality "24"^^xsd:nonNegativeInteger ;
+                                        owl:onDataRange xsd:float
+                                      ] .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/FallFromLadder
+:FallFromLadder rdf:type owl:Class ;
+                rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#FallFromHeight> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/FallFromScaffolding
+:FallFromScaffolding rdf:type owl:Class ;
+                     rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#FallFromHeight> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/HealthAndSafetyRisk
+:HealthAndSafetyRisk rdf:type owl:Class ;
+                     rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#IfcRisk> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Hinge
+:Hinge rdf:type owl:Class ;
+       rdfs:subClassOf :IfcElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Hopper
+:Hopper rdf:type owl:Class ;
+        rdfs:subClassOf :IfcOpeningElement ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :isEquipedBy ;
+                          owl:someValuesFrom [ rdf:type owl:Class ;
+                                               owl:unionOf ( :Barring
+                                                             :IfcRailing
+                                                           )
+                                             ]
+                        ] .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/HopperSquareHuman
+:HopperSquareHuman rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/HopperSquareObject
+:HopperSquareObject rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcActor
+:IfcActor rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcBuildingElement
+:IfcBuildingElement rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcDiscreteAccessory
+:IfcDiscreteAccessory rdf:type owl:Class ;
+                      rdfs:subClassOf :IfcElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcElement
+:IfcElement rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcFurniture
+:IfcFurniture rdf:type owl:Class ;
+              rdfs:subClassOf :IfcElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcHatch
+:IfcHatch rdf:type owl:Class ;
+          rdfs:subClassOf :IfcElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcOpeningElement
+:IfcOpeningElement rdf:type owl:Class ;
+                   rdfs:subClassOf :IfcBuildingElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcProcess
+:IfcProcess rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcRailing
+:IfcRailing rdf:type owl:Class ;
+            rdfs:subClassOf :IfcElement ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasHeight ;
+                              owl:minQualifiedCardinality "120"^^xsd:nonNegativeInteger ;
+                              owl:onDataRange xsd:float
+                            ] .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcRoof
+:IfcRoof rdf:type owl:Class ;
+         rdfs:subClassOf :IfcBuildingElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/IfcSlab
+:IfcSlab rdf:type owl:Class ;
+         rdfs:subClassOf :IfcBuildingElement .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Inspection
+:Inspection rdf:type owl:Class ;
+            rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#Activity> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Installation
+:Installation rdf:type owl:Class ;
+              rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#Activity> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Preventive
+:Preventive rdf:type owl:Class ;
+            rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#SafetyMeasure> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Protective
+:Protective rdf:type owl:Class ;
+            rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#SafetyMeasure> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/Reparation
+:Reparation rdf:type owl:Class ;
+            rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#Activity> .
+
+
+###  http://www.semanticweb.org/feriel.moalla/ontologies/2024/1/untitled-ontology-21/RoofWorkSituation
+:RoofWorkSituation rdf:type owl:Class ;
+                   rdfs:subClassOf <http://www.co-ode.org/ontologies/ont.owl#WorkSituation> .
+
+
+###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
