@@ -1,3 +1,5 @@
+/*sidebar.jsxt*/
+
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';  // <- on importe useNavigate et useLocation
 import {

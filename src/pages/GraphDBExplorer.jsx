@@ -1,37 +1,38 @@
+/*GraphDBExplorer.jsx*/
+
 import React, { useState } from 'react';
 
 const GraphDBExplorer = () => {
-  // URI par défaut (tu peux la modifier dynamiquement)
-  const [entityURI, setEntityURI] = useState('http://example.org/ifc#Entity_9608');
-
-  const baseURL = 'http://localhost:7200/graph-explore?resource='; // modifie si GraphDB est distant
+  const baseURL = 'http://localhost:7200/resource?uri=http:%2F%2Fwww.mergedonto.fr&role=context';
+  const graphURL = baseURL 
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Exploration RDF dans GraphDB</h2>
+    <div style={{ width: '80vw', margin: 0, padding: 0, backgroundColor: '#fff' }}>
+      <div style={{ padding: '1rem 2rem' }}>
+        <h2 className="flex-1 text-center text-xl font-semibold" style={{ marginBottom: '0.05rem' }}>Exploration des données du modèle</h2>
 
-      {/* Champ pour changer dynamiquement l'URI */}
-      <div style={{ marginBottom: '1rem' }}>
-        <label>URI de l'entité : </label>
-        <input
-          type="text"
-          value={entityURI}
-          onChange={(e) => setEntityURI(e.target.value)}
-          style={{ width: '60%' }}
-        />
-        <button onClick={() => window.open(baseURL + encodeURIComponent(entityURI), '_blank')}>
+{/*        <button
+          onClick={() => window.open(graphURL, '_blank')}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#483EA8',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            marginBottom: '1rem'
+          }}
+        >
           Ouvrir dans un nouvel onglet
-        </button>
+        </button>*/}
       </div>
 
-      {/* Iframe d'exploration intégrée */}
       <iframe
-        title="Exploration GraphDB"
-        src={baseURL + encodeURIComponent(entityURI)}
-        width="100%"
-        height="600px"
-        frameBorder="0"
-      />
+  title="Exploration GraphDB"
+  src={graphURL}
+  className="w-full h-[700px] bg-gray-100 border-none -mt-2"
+/>
+
     </div>
   );
 };

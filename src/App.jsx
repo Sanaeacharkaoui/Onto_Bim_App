@@ -1,3 +1,5 @@
+/*App.jsx*/
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/MainLayout';
@@ -6,8 +8,8 @@ import ImportIFC from './pages/ImportIFC';
 import ConvertToRDF from './pages/ConvertToRDF';
 import CheckRequirements from './pages/CheckRequirements';
 import ExploreData from './pages/ExploreData';
-import GraphDBIframe from './pages/GraphDBIframe';
-
+import GraphDBExplorer from './pages/GraphDBExplorer';
+import Report from './pages/Report';
 export default function App() {
   return (
     <BrowserRouter>
@@ -17,8 +19,9 @@ export default function App() {
           <Route path="/import" element={<ImportIFC />} />
           <Route path="/convert" element={<ConvertToRDF />} />
           <Route path="/security" element={<CheckRequirements />} />
-          <Route path="/explore" element={<ExploreData />} />
-          <Route path="/graphdb" element={<GraphDBIframe />} />
+          <Route path="/explore" element={<GraphDBExplorer />} />
+          <Route path="/report" element={<Report />} /> 
+
 
         </Routes>
       </MainLayout>

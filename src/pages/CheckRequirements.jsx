@@ -1,3 +1,5 @@
+/*CheckRequirements.jsx*/
+
 import React, { useState } from 'react';
 import { Table, GitBranch } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -16,17 +18,17 @@ export default function CheckRequirements() {
 
   const rules = [
     { id: 'Ouvertures', label: '🔍 Chercher les ouvertures' },
-    { id: 'Elements et proprietes', label: 'Identifier les portes et les fenêtres avec leurs dimensions' },
+    { id: 'Elements et proprietes', label: '🚪 Identifier les portes et les fenêtres avec leurs dimensions' },
     { id: 'Ouvertures et elements associes', label: '🔗 Chercher les ouvertures et les éléments associés' },
     { id: 'Dalles', label: '🧱 Lister les dalles ' },
     { id: 'Murs', label: '🏗 Lister les murs ' },
-    { id: 'Garde-corps', label: '🛡 Lister les garde-corps' },
+    { id: 'Garde-corps', label: '🛡 Lister les garde-corps et leur élément associé' },
     { id: 'Toitures', label: '🏠 Lister les toitures ' },
-    { id: 'Toitures avec trémies', label: '🏠 Toitures contenant des trémies' },
-    { id: 'Toitures avec garde-corps', label: '🛡 Toitures contenant des garde-corps' },
-    { id: 'Trémies > 80cm', label: '📏 Trémies ≥ 80cm x 80cm' },
+    { id: 'Toitures avec trémies', label: '🏠 Lister toitures contenant des trémies' },
+    { id: 'Toitures avec garde-corps', label: '🛡 Lister les toitures contenant des garde-corps' },
+    { id: 'Trémies > 80cm', label: '📏 Lister les trémies ≥ 80cm x 80cm' },
   ];
-
+ //  Fonction d’exécution de la requête
   const handleExecute = () => {
     if (!rule) return;
     setResults([]);
@@ -40,9 +42,9 @@ export default function CheckRequirements() {
         return res.json();
       })
       .then(data => {
-        if (data.length > 0) {
-          setColumns(Object.keys(data[0]));
-        }
+        const allKeys = new Set();
+        data.forEach(obj => Object.keys(obj).forEach(k => allKeys.add(k)));
+        setColumns([...allKeys]);
         setResults(data);
       })
       .catch(err => {
@@ -55,106 +57,225 @@ export default function CheckRequirements() {
       });
   };
 
-  const convertToGraphData = (data) => {
+  const convertToGraphData = (data, rule) => {
     const nodes = new Map();
     const links = [];
+  
+    const addNode = (id, label) => {
+      if (!id) return; // ignore les valeurs null
+      const name = label || id.split(/[#/]/).pop();
+      if (!nodes.has(id)) {
+        nodes.set(id, { id, name });
+      }
+    };
+  
+    const addLink = (source, target, label) => {
+      if (nodes.has(source) && nodes.has(target)) {
+        links.push({ source, target, label });
+      }
+    };
+  
+    data.forEach((item) => {
+      switch (rule) {
+        case 'Ouvertures':
+          addNode(item.opening);
+          break;
+  
+        case 'Elements et proprietes':
+          addNode(item.ouverture);
+          if (item.type) {
+            addNode(item.type);
+            addLink(item.ouverture, item.type, 'type');
+          }
+          if (item.largeur) {
+            addNode(item.largeur);
+            addLink(item.ouverture, item.largeur, 'largeur');
+          }
+          if (item.hauteur) {
+            addNode(item.hauteur);
+            addLink(item.ouverture, item.hauteur, 'hauteur');
+          }
 
-    data.forEach((item, index) => {
-      const sourceId = item['GardeCorps'] || `node-${index}`;
-      const labelS = sourceId.split(/[#/]/).pop();
-
-      nodes.set(sourceId, { id: sourceId, name: labelS });
-
-      Object.entries(item).forEach(([key, value]) => {
-        if (key === 'GardeCorps') return;
-
-        const targetId = value;
-        const labelT = value.split(/[#/]/).pop();
-
-        nodes.set(targetId, { id: targetId, name: labelT });
-
-        links.push({ source: sourceId, target: targetId, label: key });
-      });
+          break;
+  
+        case 'Ouvertures et elements associes':
+          addNode(item.opening);
+          addNode(item.associated_element);
+          addLink(item.opening, item.associated_element, 'élément associé');
+  
+          if (item.opening_type) {
+            addNode(item.opening_type);
+            addLink(item.opening, item.opening_type, "type d'ouverture");
+          }
+          if (item.element_type) {
+            addNode(item.element_type);
+            addLink(item.associated_element, item.element_type, "type d'élément");
+          }
+          break;
+  
+        case 'Garde-corps':
+          addNode(item.gardeCorps);
+          if (item.objectType) {
+            addNode(item.objectType);
+            addLink(item.gardeCorps, item.objectType, 'type');
+          }
+          if (item.reference) {
+            addNode(item.reference);
+            addLink(item.gardeCorps, item.reference, 'référence');
+          }
+          if (item.Hauteur) {
+            addNode(item.Hauteur);
+            addLink(item.gardeCorps, item.Hauteur, 'hauteur');
+          }
+          if (item.material) {
+            addNode(item.material);
+            addLink(item.gardeCorps, item.material, 'matériau');
+          }
+          if (item.associeA) {
+            addNode(item.associeA);
+            addLink(item.gardeCorps, item.associeA, 'contenu dans');
+            if (item.nom) {
+              addNode(item.nom);
+              addLink(item.associeA, item.nom, 'nom');
+            }
+          }
+          break;
+  
+        case 'Dalles':
+          addNode(item.slab);
+          if (item.slabName) {
+            addNode(item.slabName);
+            addLink(item.slab, item.slabName, 'nom');
+          }
+          break;
+  
+        case 'Murs':
+          addNode(item.wall);
+          if (item.id) {
+            addNode(item.id);
+            addLink(item.wall, item.id, 'identifiant');
+          }
+          break;
+  
+        case 'Toitures':
+          addNode(item.roof);
+          if (item.roofName) {
+            addNode(item.roofName);
+            addLink(item.roof, item.roofName, 'nom');
+          }
+          break;
+  
+        case 'Toitures avec trémies':
+          addNode(item.Trémie);
+          addNode(item.slab);
+          addNode(item.Slab_typeLabel);
+          addLink(item.slab, item.Trémie, 'contient trémie');
+          addLink(item.slab, item.Slab_typeLabel, 'type');
+          break;
+  
+        case 'Toitures avec garde-corps':
+          addNode(item.roof);
+          addNode(item.railing);
+          if (item.roofName) {
+            addNode(item.roofName);
+            addLink(item.roof, item.roofName, 'nom');
+          }
+          addLink(item.roof, item.railing, 'a garde-corps');
+          break;
+  
+        case 'Trémies > 80cm':
+          addNode(item.opening);
+          if (item.width) {
+            addNode(item.width);
+            addLink(item.opening, item.width, 'largeur');
+          }
+          if (item.height) {
+            addNode(item.height);
+            addLink(item.opening, item.height, 'hauteur');
+          }
+          break;
+  
+        default:
+          // fallback générique
+          const baseId = item.id || JSON.stringify(item);
+          addNode(baseId);
+          Object.entries(item).forEach(([k, v]) => {
+            if (typeof v === 'string') {
+              addNode(v);
+              addLink(baseId, v, k);
+            }
+          });
+      }
     });
-
+  
     return {
       nodes: Array.from(nodes.values()),
-      links
+      links,
     };
   };
-
+  
+//---------------------------------------------
   const displayed = results.filter(r =>
-    Object.values(r).some(val => val.toLowerCase().includes(filter.toLowerCase()))
+    Object.values(r).some(val => typeof val === 'string' && val.toLowerCase().includes(filter.toLowerCase()))
   );
 
-  return (
-    <div className="w-full max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-lg space-y-6">
-      <h2 className="text-2xl font-semibold text-gray-900 text-center">
-        Vérification des exigences
-      </h2>
+    return (
+      <div className="w-full max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-lg space-y-6">
+        <h2 className="text-2xl font-semibold text-gray-900 text-center">
+          Vérification des exigences
+        </h2>
 
-      <div className="flex justify-center space-x-2">
-        <button
-          onClick={() => setMode('table')}
-          className={`p-2 rounded ${mode === 'table' ? 'bg-[#483EA8] text-white' : 'bg-gray-100'}`}
-        >
-          <Table size={20} />
-        </button>
-        <button
-          onClick={() => setMode('graph')}
-          className={`p-2 rounded ${mode === 'graph' ? 'bg-[#483EA8] text-white' : 'bg-gray-100'}`}
-        >
-          <GitBranch size={20} />
-        </button>
+        <div className="flex justify-center space-x-2">
+          <button
+            title="Table"
+            onClick={() => setMode('table')}
+            className={`p-2 rounded ${mode === 'table' ? 'bg-[#483EA8] text-white' : 'bg-gray-100'}`}>
+            <Table size={20} />
+          </button>
+
+          <button
+            title="Graphique"
+            onClick={() => setMode('graph')}
+            className={`p-2 rounded ${mode === 'graph' ? 'bg-[#483EA8] text-white' : 'bg-gray-100'}`}>
+            <GitBranch size={20} />
+          </button>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <select
+            value={rule}
+            onChange={e => setRule(e.target.value)}
+            className="flex-1 border border-gray-300 rounded px-3 py-2">
+            <option value="" disabled>Choisissez une exigence…</option>
+            {rules.map(r => (
+              <option key={r.id} value={r.id}>{r.label}</option>
+            ))}
+          </select>
+          
+          <button
+            disabled={!rule}
+            onClick={handleExecute}
+            className="bg-[#483EA8] hover:bg-[#3B3690] text-white font-semibold px-6 py-2 rounded disabled:opacity-50"
+          >
+            EXÉCUTER
+          </button>
+        </div>
+        
+        <div className="flex justify-between items-center">
+    {loading ? (
+      <div className="flex items-center gap-2 text-gray-600 italic">
+        …chargement…
       </div>
 
-      <div className="flex items-center space-x-4">
-        <select
-          value={rule}
-          onChange={e => setRule(e.target.value)}
-          className="flex-1 border border-gray-300 rounded px-3 py-2"
-        >
-          <option value="" disabled>Choisissez une exigence…</option>
-          {rules.map(r => (
-            <option key={r.id} value={r.id}>{r.label}</option>
-          ))}
-        </select>
-        <button
-          onClick={handleExecute}
-          className="bg-[#483EA8] hover:bg-[#3B3690] text-white font-semibold px-6 py-2 rounded"
-        >
-          EXÉCUTER
-        </button>
-      </div>
+    ) : hasExecuted ? (
+      <span className="text-gray-700 italic">
+        {displayed.length}&nbsp;résultat
+        {displayed.length !== 1 ? 's' : ''}
+        {' '}trouvé
+        {displayed.length !== 1 ? 's' : ''}
+      </span>
+    ) : null}
 
-      <div className="flex justify-between items-center">
-        {loading ? (
-          <div className="flex items-center gap-2 text-gray-600 italic">
-            <svg className="animate-spin h-5 w-5 text-gray-500" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-                fill="none"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              />
-            </svg>
-            Chargement en cours…
-          </div>
-        ) : hasExecuted && displayed.length === 0 ? (
-          <div className="bg-red-100 text-red-700 px-4 py-2 rounded border border-red-300 italic">
-            🚨 Aucun élément conforme trouvé : la règle n’est pas respectée dans ce modèle.
-          </div>
-        ) : (
-          <span>{displayed.length} résultats trouvés</span>
-        )}
         <input
           type="text"
           placeholder="Filtrer les résultats"
@@ -174,6 +295,7 @@ export default function CheckRequirements() {
                 ))}
               </tr>
             </thead>
+            
             <tbody>
               {displayed.map((row, i) => (
                 <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -186,10 +308,13 @@ export default function CheckRequirements() {
           </table>
         </div>
       ) : (
-        <div className="h-[500px] bg-gray-50 rounded shadow">
+        <div className="relative h-[500px] w-full bg-gray-50 rounded shadow overflow-hidden">
+
           {results.length > 0 ? (
             <ForceGraph2D
-              graphData={convertToGraphData(displayed)}
+              graphData={convertToGraphData(displayed,rule)}
+              
+              nodeRelSize={8} 
               nodeAutoColorBy="id"
               linkDirectionalArrowLength={6}
               linkDirectionalArrowRelPos={1}
@@ -231,8 +356,12 @@ export default function CheckRequirements() {
           Voir les résultats des vérifications
         </button>
         <button
-          onClick={() => navigate('/report')}
-          className="bg-green-100 hover:bg-green-200 text-green-800 font-semibold px-4 py-2 rounded"
+          onClick={() => navigate('/report', {
+            state: { rule, results }
+          })}
+              disabled={!hasExecuted}
+              className="bg-green-100 hover:bg-green-200 text-green-800 font-semibold px-4 py-2 rounded disabled:opacity-50"
+
         >
           VISUALISER LE RAPPORT
         </button>

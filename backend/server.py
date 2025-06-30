@@ -24,33 +24,6 @@ app.add_middleware(
 app.include_router(req_router)
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-GRAPHDB_URL = "http://localhost:7200/repositories/my_ontology"
-
-@app.get("/api/explore")
-def explore_graph(limit: int = 200):
-    sparql = SPARQLWrapper(GRAPHDB_URL)
-    query = f"""
-        SELECT ?s ?p ?o
-        WHERE {{
-            ?s ?p ?o
-        }}
-        LIMIT {limit}
-    """
-    sparql.setQuery(query)
-    sparql.setReturnFormat(JSON)
-
-    try:
-        results = sparql.query().convert()
-        triplets = []
-        for r in results["results"]["bindings"]:
-            triplets.append({
-                "subject": r["s"]["value"],
-                "predicate": r["p"]["value"],
-                "object": r["o"]["value"]
-            })
-        return triplets
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur SPARQL : {e}")
 
 # 2) Endpoint POST pour la conversion + fusion
 @app.post("/api/convert-ifc")

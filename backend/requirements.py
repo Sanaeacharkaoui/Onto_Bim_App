@@ -1,3 +1,4 @@
+#backend /requirements.py
 from fastapi import APIRouter, HTTPException
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -11,9 +12,9 @@ SPARQL_QUERIES = {
     "Ouvertures": """
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC2X3_TC1#>
-        SELECT ?opening WHERE {
-            ?opening rdf:type ifc:IfcOpeningElement .
-        }
+       SELECT ?opening  WHERE {
+  ?opening rdf:type ifc:IfcOpeningElement .
+}
     """,
 
     "Elements et proprietes": """
@@ -28,20 +29,26 @@ SPARQL_QUERIES = {
     """,
 
     "Ouvertures et elements associes": """
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC2X3_TC1#>
-        SELECT ?opening ?opening_type ?associated_element ?element_type WHERE {
-            ?opening rdf:type ifc:IfcOpeningElement .
-            OPTIONAL { ?opening rdf:type ?opening_type . }
-            ?rel rdf:type ifc:IfcRelVoidsElement .
-            ?rel ifc:RelatedOpeningElement ?opening .
-            ?rel ifc:RelatingBuildingElement ?associated_element .
-            ?associated_element rdf:type ?element_type .
-            FILTER(?element_type IN (
-                ifc:IfcWall, ifc:IfcWallStandardCase,
-                ifc:IfcSlab, ifc:IfcRoof
-            ))
-        }
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?opening ?opening_type ?associated_element ?element_type
+WHERE {
+  ?opening rdf:type ifc:IfcOpeningElement .
+  OPTIONAL { ?opening ifc:type ?opening_type . }
+
+  ?rel rdf:type ifc:IfcRelVoidsElement .
+  ?rel ifc:RelatedOpeningElement ?opening .
+  ?rel ifc:RelatingBuildingElement ?associated_element .
+
+  ?associated_element rdf:type ?element_type .
+  FILTER(?element_type IN (
+    ifc:IfcWall, ifc:IfcWallStandardCase,
+    ifc:IfcSlab,
+    ifc:IfcRoof
+  ))
+}
+
     """,
 
     "Dalles": """
@@ -106,8 +113,6 @@ SELECT ?Trémie ?slab ?Slab_typeLabel WHERE {
   ?slab ifc:ObjectType ?Slab_typeLabel .
   FILTER(CONTAINS(LCASE(STR(?Slab_typeLabel)), "toiture"))
 }
-
-
 
     """,
 
