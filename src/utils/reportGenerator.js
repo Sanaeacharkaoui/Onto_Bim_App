@@ -101,6 +101,70 @@ export function generateReport(rule, results) {
           message: `🔍 Ouverture trouvée : ${r.opening}`
         }))
       };
+
+      case 'Ouvertures et elements associes':
+    return {
+    ...base,
+    title: 'Ouvertures et éléments associés',
+    description: 'Vérifie les ouvertures présentes dans le modèle BIM et leurs éléments associés.',
+    passed: results.length > 0,
+    details: results.map(r => {
+      const openingId = r.opening?.split('_').pop();
+      const elementId = r.associated_element?.split('_').pop();
+      const openingType = r.opening_type?.split('#').pop();
+      const elementType = r.element_type?.split('#').pop();
+
+      return {
+        status: 'success',
+        message: `✅ Ouverture **${openingType}** (ID: ${openingId}) associée à l’élément **${elementType}** (ID: ${elementId})`
+      };
+    })
+  };
+case 'Dalles':
+  return {
+    ...base,
+    title: 'Liste des dalles détectées',
+    description: 'Affiche les dalles présentes dans le modèle BIM, avec leurs noms et identifiants.',
+    passed: results.length > 0,
+    details: results.map(r => {
+      const slabId = r.slab?.split('_').pop(); // extrait juste le numéro de l'URI
+      const slabName = r.slabName || 'Nom inconnu';
+
+      return {
+        status: 'success',
+        message: `🧱 Dalle **${slabName}** (ID: ${slabId})`
+      };
+    })
+  };
+  case 'Murs':
+  return {
+    ...base,
+    title: 'Liste des murs détectés',
+    description: 'Affiche les murs présents dans le modèle avec leurs identifiants uniques.',
+    passed: results.length > 0,
+    details: results.map(r => {
+      const id = r.id || r.wall?.split('_').pop(); // id explicite ou extrait de l'URI
+      return {
+        status: 'success',
+        message: `🧱 Mur détecté : ID ${id}`
+      };
+    })
+  };
+case 'Toitures':
+  return {
+    ...base,
+    title: 'Liste des toitures détectées',
+    description: 'Affiche les toitures présentes dans le modèle BIM avec leurs noms et identifiants.',
+    passed: results.length > 0,
+    details: results.map(r => {
+      const roofId = r.roof?.split('_').pop();
+      const roofName = r.roofName || 'Nom inconnu';
+      return {
+        status: 'success',
+        message: `🏠 Toiture **${roofName}** (ID: ${roofId})`
+      };
+    })
+  };
       
 
     default:
