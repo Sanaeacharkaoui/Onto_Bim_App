@@ -1,36 +1,39 @@
-// src/pages/GraphDBExplorer.jsx
-import React, { useEffect, useRef } from 'react';
-import { useLocation }           from 'react-router-dom';
+import React, { useState } from 'react';
 
-export default function GraphDBExplorer() {
-  const { state }       = useLocation();
-  const initialSubject  = state?.subjectIRI;    // tu peux passer null ou undefined
-  const containerRef    = useRef(null);
+const GraphDBExplorer = () => {
+  // URI par défaut (tu peux la modifier dynamiquement)
+  const [entityURI, setEntityURI] = useState('http://example.org/ifc#Entity_9608');
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // 1) Crée le web component <visual-graph>
-    const vg = document.createElement('visual-graph');
-    vg.setAttribute('base-url',   'http://localhost:7200');
-    vg.setAttribute('repository', 'my_ontology');
-    if (initialSubject) {
-      vg.setAttribute('resource', initialSubject);
-    }
-    vg.style.width  = '100%';
-    vg.style.height = '100%';
-
-    // 2) Monte-le dans le DOM
-    container.appendChild(vg);
-
-    // 3) cleanup à la destruction du composant
-    return () => {
-      if (container.contains(vg)) container.removeChild(vg);
-    };
-  }, [initialSubject]);
+  const baseURL = 'http://localhost:7200/graph-explore?resource='; // modifie si GraphDB est distant
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+    <div style={{ padding: '1rem' }}>
+      <h2>Exploration RDF dans GraphDB</h2>
+
+      {/* Champ pour changer dynamiquement l'URI */}
+      <div style={{ marginBottom: '1rem' }}>
+        <label>URI de l'entité : </label>
+        <input
+          type="text"
+          value={entityURI}
+          onChange={(e) => setEntityURI(e.target.value)}
+          style={{ width: '60%' }}
+        />
+        <button onClick={() => window.open(baseURL + encodeURIComponent(entityURI), '_blank')}>
+          Ouvrir dans un nouvel onglet
+        </button>
+      </div>
+
+      {/* Iframe d'exploration intégrée */}
+      <iframe
+        title="Exploration GraphDB"
+        src={baseURL + encodeURIComponent(entityURI)}
+        width="100%"
+        height="600px"
+        frameBorder="0"
+      />
+    </div>
   );
-}
+};
+
+export default GraphDBExplorer;

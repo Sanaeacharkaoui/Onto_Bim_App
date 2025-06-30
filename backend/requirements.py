@@ -66,10 +66,25 @@ SPARQL_QUERIES = {
 
     "Garde-corps": """
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC2X3_TC1#>
-        SELECT ?railing WHERE {
-            ?railing rdf:type ifc:IfcRailing .
-        }
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC2X3_TC1#>
+
+SELECT ?gardeCorps ?objectType ?reference ?Hauteur ?material ?associeA ?nom
+WHERE {
+  ?railing rdf:type ifc:IfcRailing .
+  BIND(?railing AS ?gardeCorps)
+
+
+  OPTIONAL { ?railing ifc:ObjectType ?objectType . }
+  OPTIONAL { ?railing ifc:Reference ?reference . }
+  OPTIONAL { ?railing ifc:Height ?Hauteur . }
+  OPTIONAL {
+    ?railing ifc:hasMaterial ?material .
+    OPTIONAL { ?material ifc:Name ?materialName . } }
+      OPTIONAL { ?railing ifc:containedIn ?associeA .
+      OPTIONAL { ?associeA ifc:Name ?nom . }}
+
+}
+
     """,
 
     "Toitures": """
@@ -82,14 +97,18 @@ SPARQL_QUERIES = {
     """,
 
     "Toitures avec trémies": """
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC2X3_TC1#>
-        SELECT ?roof ?roofName ?opening WHERE {
-            ?opening rdf:type ifc:IfcOpeningElement .
-            ?opening ifc:hasOpening ?roof .
-            ?roof rdf:type ifc:IfcRoof .
-            OPTIONAL { ?roof ifc:Name ?roofName . }
-        }
+PREFIX ifc: <http://ifcowl.openbimstandards.org/IFC2X3_TC1#>
+
+SELECT ?Trémie ?slab ?Slab_typeLabel WHERE {
+  ?rel ifc:RelatedOpeningElement ?Trémie .
+  ?rel ifc:RelatingBuildingElement ?slab .
+  ?slab ifc:type "IfcSlab" .
+  ?slab ifc:ObjectType ?Slab_typeLabel .
+  FILTER(CONTAINS(LCASE(STR(?Slab_typeLabel)), "toiture"))
+}
+
+
+
     """,
 
     "Toitures avec garde-corps": """
@@ -117,6 +136,7 @@ SPARQL_QUERIES = {
             )
         }
     """,
+    
 }
 
 @router.get("/api/check-requirements")

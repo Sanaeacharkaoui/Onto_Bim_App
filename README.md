@@ -1,70 +1,112 @@
-# Getting Started with Create React App
+OntoBIM App:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Une application web pour convertir une maquette IFC en RDF, la fusionner avec une ontologie métier, puis exécuter des vérifications de règles de sécurité via SPARQL.
 
-## Available Scripts
+⚙️ Prérequis:
 
-In the project directory, you can run:
+Node.js (v16+) et npm (installés ensemble) — https://nodejs.org
 
-### `npm start`
+Python (v3.10+) et pip — https://python.org
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+GraphDB (version gratuite) avec un dépôt nommé my_ontology :
+http://localhost:7200/repositories/my_ontology
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+📥 Récupération du code source:
 
-### `npm test`
+Téléchargement ZIP:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Sur GitHub, cliquez sur Code ▾ → Download ZIP
 
-### `npm run build`
+Décompressez l’archive
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Ouvrez un terminal dans l'IDE et accédez au dossier extrait :
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+cd /chemin/vers/onto-bim-app
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+🚀 Installation des dépendances:
 
-### `npm run eject`
+Backend (FastAPI + Python)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+cd backend
+# Créez et activez un virtualenv
+python -m venv .venv
+# macOS/Linux
+source .venv/bin/activate
+# Windows
+.venv\Scripts\activate
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Installez les librairies Python
+pip install -r requirements.txt   # installe les dépendances Python
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Frontend (React + npm)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+cd frontend
+npm install       # installe les dépendances JS
 
-## Learn More
+▶️ Lancer l’application:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Démarrer GraphDB
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Veillez à ce que GraphDB soit actif sur localhost:7200
 
-### Code Splitting
+2. Lancer le backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+cd backend
+uvicorn server:app --reload --host 127.0.0.1 --port 8000
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3. Lancer le frontend
 
-### Making a Progressive Web App
+cd onto-bim-app
+npm start
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Application disponible sur : http://localhost:3000
 
-### Advanced Configuration
+📂 Structure du projet:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+onto-bim-app/
+├── backend/                  # FastAPI + scripts de conversion et fusion
+│   ├── converter.py
+│   ├── merged.py
+│   ├── requirements.txt
+│   └── server.py
+│
+├── frontend/                 # React + composants + pages
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── utils/
+│   └── package.json
+│
+├── ontologie.ttl             # Ontologie métier (Turtle)
+└── README.md
 
-### Deployment
+🔗 Endpoints exposés:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+POST /api/convert-ifc : conversion IFC → RDF fusionné (merged.rdf)
 
-### `npm run build` fails to minify
+GET /api/check-requirements?rule=<Règle> : exécution SPARQL 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+🔧 Workflow rapide:
+
+Importer un fichier .ifc
+
+Conversion + fusion ontologie
+
+Télécharger automatiquement merged.rdf
+
+Charger ce RDF dans GraphDB
+
+Sélectionner une règle et cliquer «EXÉCUTER»
+
+Afficher les résultats (tableau ou graphe)
+
+Générer et consulter le rapport
+
+Questions 
+
+Pourquoi installer Node.js ? npm (gestionnaire de paquets) est inclus avec Node.js pour lancer et gérer le frontend.
+
+Faut-il relancer npm install ou pip install à chaque redémarrage ? Non, seulement lorsqu’on télécharge pour la première fois, ou si package.json/requirements.txt change.
+

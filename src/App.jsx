@@ -6,6 +6,8 @@ import ImportIFC from './pages/ImportIFC';
 import ConvertToRDF from './pages/ConvertToRDF';
 import CheckRequirements from './pages/CheckRequirements';
 import ExploreData from './pages/ExploreData';
+import GraphDBIframe from './pages/GraphDBIframe';
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -16,6 +18,7 @@ export default function App() {
           <Route path="/convert" element={<ConvertToRDF />} />
           <Route path="/security" element={<CheckRequirements />} />
           <Route path="/explore" element={<ExploreData />} />
+          <Route path="/graphdb" element={<GraphDBIframe />} />
 
         </Routes>
       </MainLayout>
